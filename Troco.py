@@ -3,12 +3,13 @@ import random
 # Function to calculate the fitness of an individual
 def fitness(individual, coin_values, target):
     total_value = sum(ind * coin for ind, coin in zip(individual, coin_values))
-    if total_value == target:
-        return sum(individual)  # Minimize the number of coins used
-    elif total_value < target:
-        return target - total_value  # Penalize for not reaching the target
-    else:
-        return total_value - target  # Penalize for exceeding the target
+    match total_value:
+        case _ if total_value == target:            
+            return sum(individual)  # Minimize the number of coins used
+        case _ if total_value < target:
+            return target - total_value  # Penalize for not reaching the target
+        case _ if total_value > target:
+            return total_value - target  # Penalize for exceeding the target    
 
 # Function to generate a random individual
 def generate_individual(n):
@@ -67,8 +68,8 @@ def genetic_algorithm(coin_values, target, population_size=100, generations=1000
     return best_solution, best_fitness
 
 # Example of use
-coin_values = [1, 5, 10, 25]  # Values of the coins
-target = 37  # Target value we want to make change for
+coin_values = [1, 5, 10, 25, 50, 100]  # Values of the coins
+target = 36  # Target value we want to make change for
 
 best_solution, best_value = genetic_algorithm(coin_values, target)
 print("Melhor Solução: ", best_solution)
