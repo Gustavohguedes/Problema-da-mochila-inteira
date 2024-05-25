@@ -10,7 +10,7 @@ class TestGeneticAlgorithmKnapsack(unittest.TestCase):
         weights = [10, 20, 30]
         W = 50
         best_solution, best_value = genetic_algorithm(weights, values, W, population_size=50, generations=500, mutation_rate=0.01)
-        self.assertEqual(best_value, 180)
+        self.assertEqual(best_value, 220)
     
     def test_small_knapsack(self):
         values = [60, 100, 120]
