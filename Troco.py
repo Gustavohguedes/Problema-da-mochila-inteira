@@ -61,15 +61,19 @@ def genetic_algorithm(coin_values, target, population_size=100, generations=1000
             best_fitness = current_best_fitness
             best_solution = current_best_individual
         
+        # Output the best fitness found in the current generation
+        total_value = sum(ind * coin for ind, coin in zip(best_solution, coin_values))
+        print(f"Generation {generation}: Best Value = {total_value}, Best Fitness = {best_fitness}")
+        
         # Early stopping if exact solution is found
-        if best_fitness == sum(best_solution):
+        if total_value == target:
             break
     
     return best_solution, best_fitness
 
 # Example of use
-coin_values = [1, 5, 10, 25, 50, 100]  # Values of the coins
-target = 36  # Target value we want to make change for
+coin_values = [1, 5, 10, 25]  # Values of the coins
+target = 37  # Target value we want to make change for
 
 best_solution, best_value = genetic_algorithm(coin_values, target)
 print("Melhor Solução: ", best_solution)
