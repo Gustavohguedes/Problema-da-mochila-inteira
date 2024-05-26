@@ -8,3 +8,4 @@
 - [Arquimedes França](https://github.com/arqowl)
 - [Gustavo Henrique](https://github.com/Gustavohguedes)
 - [Lucas Felinto](https://github.com/lucasvfelinto)
+- [Gabriel Absalão](https://github.com/Gabrielabsalao24)
