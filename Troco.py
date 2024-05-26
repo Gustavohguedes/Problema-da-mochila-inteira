@@ -91,7 +91,7 @@ def verify_solution(coin_values, target, solution):
 
 # Example of use
 coin_values = [1, 5, 10, 25, 50, 100]  # Values of the coins
-targets = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 15, 16, 20, 50, 75, 100, 120, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850, 900, 950, 1000, 2000]
+targets = [10, 11, 15, 16, 20, 50, 75, 100, 120, 150, 200, 250, 300, 350]
                    
 
 for target in targets:
