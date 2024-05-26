@@ -6,9 +6,9 @@ def fitness(individual, coin_values, target):
     if total_value == target:
         return sum(individual)  # Minimize the number of coins used
     elif total_value < target:
-        return target - total_value + (sum(individual) * 0.1) # Penalize for not reaching the target
+        return (target - total_value) ** 3  # Penalize for not reaching the target (cubic penalty)
     else:
-        return total_value - target + (sum(individual) * 0.1)  # Penalize for exceeding the target  
+        return (total_value - target) ** 3  # Penalize for exceeding the target (cubic penalty)
 
 # Function to generate a random individual
 def generate_individual(n):
@@ -34,7 +34,7 @@ def mutate(individual, mutation_rate):
     return [gene if random.random() > mutation_rate else 1 - gene for gene in individual]
 
 # Function to perform a genetic algorithm
-def genetic_algorithm(coin_values, target, population_size=100, generations=1000, mutation_rate=0.01):
+def genetic_algorithm(coin_values, target, population_size=200, generations=3000, mutation_rate=0.1, elite_size=2):
     n = len(coin_values)
     population = create_population(population_size, n)
     
@@ -44,11 +44,19 @@ def genetic_algorithm(coin_values, target, population_size=100, generations=1000
     for generation in range(generations):
         new_population = []
         
-        for _ in range(population_size // 2):
+        # Elitism: Preserve the best individuals from the previous generation
+        if elite_size > 0:
+            elite = sorted(population, key=lambda ind: fitness(ind, coin_values, target))[:elite_size]
+            new_population.extend(elite)
+        
+        # Generate offspring through crossover and mutation
+        while len(new_population) < population_size:
             parent1 = tournament_selection(population, coin_values, target)
             parent2 = tournament_selection(population, coin_values, target)
             offspring1, offspring2 = one_point_crossover(parent1, parent2)
-            new_population.extend([mutate(offspring1, mutation_rate), mutate(offspring2, mutation_rate)])
+            offspring1 = mutate(offspring1, mutation_rate)
+            offspring2 = mutate(offspring2, mutation_rate)
+            new_population.extend([offspring1, offspring2])
         
         population = new_population
         
@@ -62,7 +70,7 @@ def genetic_algorithm(coin_values, target, population_size=100, generations=1000
         
         # Output the best fitness found in the current generation
         total_value = sum(ind * coin for ind, coin in zip(best_solution, coin_values))
-        print(f"Generation {generation}: Best Value = {total_value}, Best Fitness = {best_fitness}")
+        # print(f"Generation {generation}: Best Value = {total_value}, Best Fitness = {best_fitness}")
         
         # Early stopping if exact solution is found
         if total_value == target:
@@ -70,21 +78,31 @@ def genetic_algorithm(coin_values, target, population_size=100, generations=1000
     
     return best_solution, best_fitness
 
-# Example of use
-coin_values = [1, 5, 10, 25, 50, 100]  # Values of the coins
-target = 101  # Target value we want to make change for
-
-best_solution, best_value = genetic_algorithm(coin_values, target)
-print("Melhor Solução: ", best_solution)
-print("Valor Total das Moedas: ", sum(coin * val for coin, val in zip(best_solution, coin_values)))
-print("Número de Moedas: ", sum(best_solution))
-
 # Verifying the solution
 def verify_solution(coin_values, target, solution):
     total = sum(coin * val for coin, val in zip(solution, coin_values))
     if total == target:
-        print("A solução é válida e atinge o valor alvo.")
+        print(f"A solução é válida e atinge o valor alvo. Total obtido: {total}, Valor alvo: {target}")
+    elif abs(total - target) <= 1:
+        print(f"A solução é válida e atinge ou está dentro da faixa aceitável do valor alvo. Total obtido: {total}, Valor alvo: {target}") 
     else:
         print(f"A solução é inválida. Total obtido: {total}, Valor alvo: {target}")
 
-verify_solution(coin_values, target, best_solution)
+
+# Example of use
+coin_values = [1, 5, 10, 25, 50, 100]  # Values of the coins
+targets = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 15, 16, 20, 50, 75, 100, 120, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850, 900, 950, 1000, 2000]
+                   
+
+for target in targets:
+        best_solution, _ = genetic_algorithm(coin_values, target)
+        total_value = sum(coin * val for coin, val in zip(best_solution, coin_values))
+        
+        print(f"Target: {target}, Best Solution: {best_solution}, Total Value: {total_value}")
+        verify_solution(coin_values, target, best_solution)
+       
+# best_solution, best_value = genetic_algorithm(coin_values, target)
+# print("Melhor Solução: ", best_solution)
+# print("Valor Total das Moedas: ", sum(coin * val for coin, val in zip(best_solution, coin_values)))
+# print("Número de Moedas: ", sum(best_solution))
+
